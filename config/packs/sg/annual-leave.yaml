@@ -1,0 +1,31 @@
+# Entitlement pack: Singapore statutory annual leave (ILLUSTRATIVE, SYNTHETIC).
+#
+# This pack is CONFIGURATION, not code. The deterministic engine reads it; unknown fields refuse
+# at load. Values are illustrative and simplified for an offline demo: a real deployment loads the
+# client's own reviewed pack. Citations reference public statute so a computed number is traceable
+# to a clause; no fictional institution, person or identifier appears here.
+jurisdiction: SG
+version: "1.0"
+source_id: sg-ea-1968-part-iv
+source_title: "Employment Act 1968 (Singapore), Part IV"
+rules:
+  - rule_id: sg-annual-leave-full-time
+    entitlement: annual_leave
+    employment_type: full_time
+    min_months_service: 3
+    base_days: 7
+    increment_days_per_year: 1
+    max_days: 14
+    citation_clause: "s43(1)"
+    effective_from: "2020-01-01"
+    effective_to: ""
+  - rule_id: sg-annual-leave-part-time
+    entitlement: annual_leave
+    employment_type: part_time
+    min_months_service: 3
+    base_days: 4
+    increment_days_per_year: 1
+    max_days: 8
+    citation_clause: "s43(1) (pro-rated)"
+    effective_from: "2020-01-01"
+    effective_to: ""

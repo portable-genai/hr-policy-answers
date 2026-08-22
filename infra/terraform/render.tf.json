@@ -1,0 +1,8 @@
+{
+  "locals": {
+    "render_region": "asia-southeast1",
+    "render_package_name": "hr_policy_answers",
+    "render_env_prefix": "POLICYHR",
+    "render_catalog_id": "H2"
+  }
+}

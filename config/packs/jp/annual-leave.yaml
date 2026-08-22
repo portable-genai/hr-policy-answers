@@ -1,0 +1,22 @@
+# Entitlement pack: Japan statutory annual paid leave (ILLUSTRATIVE, SYNTHETIC).
+#
+# Configuration, not code. Illustrative and simplified for an offline demo: entitlement begins
+# after six months continuous service and grows with service. Citations reference public statute
+# so a computed number is traceable to a clause. Only a full-time rule is packed here on purpose,
+# so a part-time request has no matching rule and the engine fails closed to human review rather
+# than guessing (proved in the eval as a per-jurisdiction red case).
+jurisdiction: JP
+version: "1.0"
+source_id: jp-lsa-1947-art39
+source_title: "Labor Standards Act (Japan), Article 39"
+rules:
+  - rule_id: jp-annual-leave-full-time
+    entitlement: annual_leave
+    employment_type: full_time
+    min_months_service: 6
+    base_days: 10
+    increment_days_per_year: 1
+    max_days: 20
+    citation_clause: "art.39(1)"
+    effective_from: "2019-04-01"
+    effective_to: ""

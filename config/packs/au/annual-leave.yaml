@@ -1,0 +1,29 @@
+# Entitlement pack: Australia National Employment Standards annual leave (ILLUSTRATIVE, SYNTHETIC).
+#
+# Configuration, not code. Illustrative and simplified for an offline demo. Citations reference
+# public statute so a computed number is traceable to a clause.
+jurisdiction: AU
+version: "1.0"
+source_id: au-fwa-2009-nes
+source_title: "Fair Work Act 2009 (Australia), National Employment Standards"
+rules:
+  - rule_id: au-annual-leave-full-time
+    entitlement: annual_leave
+    employment_type: full_time
+    min_months_service: 0
+    base_days: 20
+    increment_days_per_year: 0
+    max_days: 20
+    citation_clause: "s87(1)(a)"
+    effective_from: "2010-01-01"
+    effective_to: ""
+  - rule_id: au-annual-leave-part-time
+    entitlement: annual_leave
+    employment_type: part_time
+    min_months_service: 0
+    base_days: 10
+    increment_days_per_year: 0
+    max_days: 10
+    citation_clause: "s87(1)(a) (pro-rated)"
+    effective_from: "2010-01-01"
+    effective_to: ""
