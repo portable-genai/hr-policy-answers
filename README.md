@@ -30,7 +30,7 @@ and the grounded cited-answer path over a governed corpus, are the main remainin
 ```bash
 python3.12 -m venv .venv && source .venv/bin/activate
 make install          # locked install from requirements-dev.lock, then the project --no-deps
-make gate             # the full offline gate: lint + type + test + eval
+make gate             # the full offline gate: lint + type + test + eval + plugin
 make audit            # pip-audit over both lockfiles (needs network; a HARD gate in CI)
 make lock             # recompile both lockfiles after a dependency change
 make test-integration # tests/integration only; needs a live project (the gate deselects it)
@@ -42,7 +42,8 @@ The offline gate is SDK-free and is what CI runs (via the shared reusable hard-g
 
 ```bash
 ruff check src tests && ruff format --check src tests && mypy src && \
-  pytest -m 'not integration' && python eval/run_eval.py
+  pytest -m 'not integration' && python eval/run_eval.py && \
+  python scripts/render_plugin.py --dest dist/plugin
 ```
 
 The demo surface sits OUTSIDE that gate, because the gate proves the service and the demo proves
