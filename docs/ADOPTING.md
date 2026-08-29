@@ -194,7 +194,7 @@ R8 rows with a `TODO (repo owner)` on every one that is not finished.
 
 | Concern | Owner | Wired here today? |
 |---|---|---|
-| Human review and maker-checker (rule R8) | **Hrz7** `human-review-console` | **Yes, fully.** `ReviewRouterPort` with an adapter in all three profiles, built on the shared `review-kit`. The API, the CLI and the agent tool all route in the same call that produced the result. Point `HRZ_HUMAN_REVIEW_URL` at your console and set the outbound `HRZ7_S2S_TOKEN` / `HRZ7_S2S_SIGNING_KEY`; the managed router REFUSES rather than swallowing an escalation when no console is configured. Do not re-implement the console. |
+| Human review and maker-checker (rule R8) | **Hrz7** `human-review-console` | **Yes, fully.** `ReviewRouterPort` with an adapter in all three profiles, built on the shared `review-kit`. The API, the CLI and the agent tool all route in the same call that produced the result. Point `HUMAN_REVIEW_URL` at your console and set the outbound `HUMAN_REVIEW_S2S_TOKEN` / `HUMAN_REVIEW_S2S_SIGNING_KEY`; the managed router REFUSES rather than swallowing an escalation when no console is configured. Do not re-implement the console. |
 | Tracing (part of rule R2) | **Hrz5** `agent-observability` | **Partly.** `ObservabilityTracerPort` is bound in all three profiles, and the managed adapter exports OTLP to the Hrz5 collector when `OTEL_EXPORTER_OTLP_ENDPOINT` names one, straight to Cloud Trace when it does not. Span attributes are structural only, never case text or employee facts. |
 | Immutable audit sink (the other part of R2) | **Hrz5** | **No.** The audit record lands in this repo's own store: a hash-chained, externally anchored log offline, a locked Cloud Logging bucket under `gcp`. Binding it to the shared Hrz5 sink is still open. |
 | Promotion and model-risk gate | **Hrz4** `model-quality-gate` | **Client half only.** `EvaluationGatePort` is bound; `eval/run_eval.py --mode gate` asks Hrz4 through `POLICYHR_QUALITY_URL` and refuses to run off the managed profile, and the local adapter refuses to promote at all. Registering this repo's metric bundle and thresholds with Hrz4 is yours to do, and until you do, gate mode has no authority to ask. |
@@ -217,5 +217,5 @@ any of the six inside your fork.
 - [ ] Rebuilt the eval golden sets so they measure YOUR packs, and justified the three thresholds.
 - [ ] Reviewed the deploy posture (Dockerfile, the Terraform toggles, `retention_days` before the WORM lock).
 - [ ] Completed the employment-law review per jurisdiction and recorded who owns each pack version.
-- [ ] Pointed `HRZ_HUMAN_REVIEW_URL` at your Hrz7 console and decided which other siblings you integrate vs stub.
+- [ ] Pointed `HUMAN_REVIEW_URL` at your Hrz7 console and decided which other siblings you integrate vs stub.
 - [ ] Recorded your baseline upstream tag so you can take future fixes.
