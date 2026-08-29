@@ -102,7 +102,7 @@ off is no guard.
 
 The one live outbound path is the rule R8 escalation to the Hrz7 console, over the shared
 `review-kit` client, which refuses a plaintext non-loopback URL and a missing bearer at
-construction. Its credentials (`HRZ7_S2S_TOKEN`, `HRZ7_S2S_SIGNING_KEY`) are deliberately
+construction. Its credentials (`HUMAN_REVIEW_S2S_TOKEN`, `HUMAN_REVIEW_S2S_SIGNING_KEY`) are deliberately
 distinct variables from this service's own inbound `POLICYHR_S2S_TOKEN`, so an inbound secret can
 never be spent outbound. The managed router REFUSES when no console is configured rather than
 swallowing the escalation.
