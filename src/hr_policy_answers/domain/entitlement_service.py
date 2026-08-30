@@ -12,8 +12,6 @@ The engine is injected, so a test and the eval oracle drive the exact object the
 
 from __future__ import annotations
 
-from functools import lru_cache
-
 from pii_kit import redact
 
 from ..ports.audit import AuditSinkPort
@@ -21,20 +19,7 @@ from ..ports.observability import ObservabilityTracerPort
 from .entitlement_engine import EntitlementEngine
 from .kernel import AuditEvent, utcnow
 from .models import EntitlementRequest, EntitlementResult
-from .packs import PackSet, load_pack_set
 from .pii import PII_PATTERNS, redacted_citations
-
-
-@lru_cache(maxsize=1)
-def default_pack_set() -> PackSet:
-    """The packs shipped under ``config/packs``, loaded once. Callers may inject their own."""
-    return load_pack_set()
-
-
-def default_engine() -> EntitlementEngine:
-    """An engine bound to the shipped packs (the offline default the surfaces build)."""
-    return EntitlementEngine(default_pack_set())
-
 
 #: One span per entitlement verdict. Structural attributes only: see
 #: :meth:`EntitlementService.assess`.
@@ -47,12 +32,12 @@ class EntitlementService:
     def __init__(
         self,
         audit: AuditSinkPort,
-        engine: EntitlementEngine | None = None,
+        engine: EntitlementEngine,
         *,
         tracer: ObservabilityTracerPort,
     ) -> None:
         self._audit = audit
-        self._engine = engine or default_engine()
+        self._engine = engine
         self._tracer = tracer
 
     def assess(self, request: EntitlementRequest, *, actor: str) -> EntitlementResult:

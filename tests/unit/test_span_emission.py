@@ -25,6 +25,7 @@ from hr_policy_answers.config import Settings, build_container
 from hr_policy_answers.domain.entitlement_service import EntitlementService
 from hr_policy_answers.domain.models import EntitlementRequest, TriageInput
 from hr_policy_answers.domain.triage_service import TriageService
+from hr_policy_answers.packs import default_engine
 
 from tests.fixtures import sample_cases
 
@@ -61,7 +62,7 @@ def _triage(case: TriageInput) -> _RecordingTracer:
 def _assess(request: EntitlementRequest) -> _RecordingTracer:
     tracer = _RecordingTracer()
     container = build_container(Settings(profile="local", audit_path=":memory:"))
-    service = EntitlementService(container.audit, tracer=tracer)  # type: ignore[arg-type]
+    service = EntitlementService(container.audit, default_engine(), tracer=tracer)  # type: ignore[arg-type]
     service.assess(request, actor=sample_cases.ACTOR)
     return tracer
 

@@ -18,6 +18,7 @@ from hr_policy_answers.domain.entitlement_engine import EntitlementEngine
 from hr_policy_answers.domain.entitlement_service import EntitlementService
 from hr_policy_answers.domain.kernel import Citation, Decision, Severity, VerdictStatus
 from hr_policy_answers.domain.models import EntitlementRequest, EntitlementResult
+from hr_policy_answers.packs import default_engine
 
 from tests.fixtures import sample_cases
 
@@ -25,9 +26,16 @@ from tests.fixtures import sample_cases
 def _service(
     engine: EntitlementEngine | None = None,
 ) -> tuple[EntitlementService, LocalAuditAdapter]:
+    """The engine is required now, so ``None`` here means "the shipped packs", explicitly.
+
+    It used to mean the same thing implicitly, resolved inside the service by reading the pack
+    directory off the filesystem. Naming it at the seam is what let that read move out of the
+    core entirely: the domain is handed an engine, and never goes looking for one.
+    """
     settings = Settings(profile="local", audit_path=":memory:")
     audit = LocalAuditAdapter(settings)
-    return EntitlementService(audit, engine, tracer=LocalNoopTracerAdapter(settings)), audit
+    resolved = engine if engine is not None else default_engine()
+    return EntitlementService(audit, resolved, tracer=LocalNoopTracerAdapter(settings)), audit
 
 
 class _RefQuotingEngine(EntitlementEngine):

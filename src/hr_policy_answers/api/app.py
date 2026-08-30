@@ -79,6 +79,7 @@ from ..config import (
 from ..domain.entitlement_service import EntitlementService
 from ..domain.models import EmployeeFacts, EntitlementRequest, TriageInput
 from ..domain.triage_service import TriageService
+from ..packs import default_engine
 from ..ports.identity import VERIFIED, EndUserAuthUnavailableError
 from .schemas import (
     EntitlementRequestModel,
@@ -321,7 +322,7 @@ def entitlement(
     and is ROUTED to the Hrz7 console here, in the same request that produced it.
     """
     container = _container()
-    service = EntitlementService(container.audit, tracer=container.tracer)
+    service = EntitlementService(container.audit, default_engine(), tracer=container.tracer)
     result = service.assess(
         EntitlementRequest(
             facts=EmployeeFacts(

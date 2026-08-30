@@ -62,12 +62,10 @@ from hr_policy_answers.domain.models import (
     EntitlementRequest,
     EntitlementResult,
 )
-from hr_policy_answers.domain.packs import (
-    load_pack_set,
-)
 from hr_policy_answers.domain.pii import (
     PII_PATTERNS,
 )
+from hr_policy_answers.packs import load_pack_set
 
 _REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_DATASET = _REPO_ROOT / "eval" / "datasets" / "golden_entitlements.jsonl"

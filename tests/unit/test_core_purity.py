@@ -44,11 +44,7 @@ CORE_LAYERS = ("domain", "ports")
 #: Written exemptions: (path relative to the package, import root) -> why it is still here.
 #: Debt with a name on it, not an allowance. Delete the row when the import moves out of the
 #: core; an import not listed here fails the scan.
-EXEMPT_IMPORTS: dict[tuple[str, str], str] = {
-    ("domain/packs.py", "yaml"): (
-        "policy packs are parsed inside the core; extraction to the config boundary is queued"
-    ),
-}
+EXEMPT_IMPORTS: dict[tuple[str, str], str] = {}
 
 _STDLIB = frozenset(sys.stdlib_module_names)
 

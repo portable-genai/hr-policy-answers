@@ -7,9 +7,11 @@ required field or a malformed value REFUSES at load rather than being ignored, b
 that silently drops a field it did not recognise is a policy nobody reviewed. This is the wave's
 pack convention (H2 lands it, H3 mirrors it): the shape is shared, the engines are not.
 
-Pure stdlib plus ``yaml`` (itself stdlib-only at runtime); no web framework, no cloud SDK. A rule
-carries its own :class:`~.kernel.Citation` so every number the engine derives from it is
-traceable to a clause.
+Pure stdlib: no parser, no web framework, no cloud SDK. Reading pack FILES is not this
+module's job : the YAML parse lives at the config boundary in :mod:`hr_policy_answers.packs`,
+which hands this module documents that are already plain mappings. Validation is policy and
+stays here; parsing is I/O and does not. A rule carries its own :class:`~.kernel.Citation` so
+every number the engine derives from it is traceable to a clause.
 """
 
 from __future__ import annotations
@@ -17,18 +19,9 @@ from __future__ import annotations
 from collections.abc import Iterable
 from dataclasses import dataclass
 from datetime import date
-from pathlib import Path
 from typing import Any
 
-import yaml
-
 from .kernel import Citation
-
-#: The default location packs are read from, relative to the process working directory (the repo
-#: root under ``make`` targets and ``/app`` in the image). Overridable by passing an explicit path
-#: to :func:`load_pack_set`; never read from the environment here (a two-state env read is exactly
-#: what the repo's own gate forbids), so the caller owns any override.
-DEFAULT_PACKS_DIR = Path("config") / "packs"
 
 #: Every field a rule mapping may carry. Anything else refuses at load.
 _ALLOWED_RULE_FIELDS = frozenset(
@@ -218,45 +211,44 @@ def _rule_from(
     )
 
 
-def _rules_from_document(data: Any, *, source_path: Path) -> Iterable[EntitlementRule]:
+def _rules_from_document(data: Any, *, source: str) -> Iterable[EntitlementRule]:
     if not isinstance(data, dict):
-        raise PackError(f"{source_path}: a pack file must contain a mapping at the top level")
+        raise PackError(f"{source}: a pack file must contain a mapping at the top level")
     unknown = set(data) - _ALLOWED_PACK_FIELDS
     if unknown:
-        raise PackError(f"{source_path}: unknown pack field(s) {sorted(unknown)}")
+        raise PackError(f"{source}: unknown pack field(s) {sorted(unknown)}")
     jurisdiction = str(data.get("jurisdiction") or "").strip()
     source_id = str(data.get("source_id") or "").strip()
     source_title = str(data.get("source_title") or "").strip()
     if not (jurisdiction and source_id and source_title):
-        raise PackError(f"{source_path}: jurisdiction, source_id and source_title are all required")
+        raise PackError(f"{source}: jurisdiction, source_id and source_title are all required")
     raw_rules = data.get("rules")
     if not isinstance(raw_rules, list) or not raw_rules:
-        raise PackError(f"{source_path}: 'rules' must be a non-empty list")
+        raise PackError(f"{source}: 'rules' must be a non-empty list")
     return [
         _rule_from(raw, source_id=source_id, source_title=source_title, jurisdiction=jurisdiction)
         for raw in raw_rules
     ]
 
 
-def load_pack_set(packs_dir: Path | None = None) -> PackSet:
-    """Load and validate every ``*.yaml`` pack under ``packs_dir`` into one immutable set.
+def build_pack_set(documents: Iterable[tuple[str, Any]], *, origin: str) -> PackSet:
+    """Validate already-parsed pack documents into one immutable set.
 
-    An explicit directory that does not exist RAISES: somebody named a location and running on an
-    empty rule set instead is how an engine ends up computing on no policy at all. Rule ids must be
-    globally unique so a citation is unambiguous.
+    ``documents`` is ``(source, parsed)`` pairs in the order the boundary read them, ``source``
+    naming where each came from so a refusal points somewhere. Every rule about a SET of packs
+    rather than one pack lives here because it is policy, not parsing: rule ids must be globally
+    unique so a citation is unambiguous, and an empty set RAISES rather than yielding an engine
+    that computes on no policy at all. ``origin`` names where the boundary looked, for that
+    second refusal.
     """
-    root = packs_dir if packs_dir is not None else DEFAULT_PACKS_DIR
-    if not root.exists():
-        raise PackError(f"packs directory {root} does not exist")
     rules: list[EntitlementRule] = []
     seen: set[str] = set()
-    for path in sorted(root.rglob("*.yaml")):
-        loaded = yaml.safe_load(path.read_text(encoding="utf-8"))
-        for rule in _rules_from_document(loaded, source_path=path):
+    for source, loaded in documents:
+        for rule in _rules_from_document(loaded, source=source):
             if rule.rule_id in seen:
-                raise PackError(f"duplicate rule_id {rule.rule_id!r} (from {path})")
+                raise PackError(f"duplicate rule_id {rule.rule_id!r} (from {source})")
             seen.add(rule.rule_id)
             rules.append(rule)
     if not rules:
-        raise PackError(f"no rule packs were found under {root}")
+        raise PackError(f"no rule packs were found under {origin}")
     return PackSet(rules=tuple(rules))

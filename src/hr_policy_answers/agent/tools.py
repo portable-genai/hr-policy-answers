@@ -26,6 +26,7 @@ from ..domain.entitlement_service import EntitlementService
 from ..domain.models import EmployeeFacts, EntitlementRequest, TriageInput
 from ..domain.pii import PII_PATTERNS
 from ..domain.triage_service import TriageService
+from ..packs import default_engine
 
 if TYPE_CHECKING:  # pragma: no cover - typing only, never imported at runtime
     from google.adk.tools import FunctionTool
@@ -145,7 +146,7 @@ def assess_entitlement(
         ),
         entitlement=entitlement,
     )
-    result = EntitlementService(container.audit, tracer=container.tracer).assess(
+    result = EntitlementService(container.audit, default_engine(), tracer=container.tracer).assess(
         request, actor=actor
     )
     review_ref = ""
