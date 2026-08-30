@@ -14,7 +14,7 @@ import pytest
 from hr_policy_answers.domain.entitlement_engine import EntitlementEngine
 from hr_policy_answers.domain.kernel import Decision, Severity, VerdictStatus
 from hr_policy_answers.domain.models import EmployeeFacts, EntitlementRequest
-from hr_policy_answers.domain.packs import load_pack_set
+from hr_policy_answers.packs import load_pack_set
 
 from tests import REPO_ROOT
 

@@ -16,6 +16,7 @@ from ..config import build_container
 from ..domain.entitlement_service import EntitlementService
 from ..domain.models import EmployeeFacts, EntitlementRequest, TriageInput
 from ..domain.triage_service import TriageService
+from ..packs import default_engine
 
 _ENTITLEMENT_ACTION = "hr_policy_answers:entitlement"
 
@@ -59,7 +60,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     if args.command == "assess":
-        ent_service = EntitlementService(container.audit, tracer=container.tracer)
+        ent_service = EntitlementService(container.audit, default_engine(), tracer=container.tracer)
         ent = ent_service.assess(
             EntitlementRequest(
                 facts=EmployeeFacts(

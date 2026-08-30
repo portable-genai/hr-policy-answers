@@ -12,7 +12,8 @@ from pathlib import Path
 
 import pytest
 
-from hr_policy_answers.domain.packs import PackError, load_pack_set
+from hr_policy_answers.domain.packs import PackError
+from hr_policy_answers.packs import load_pack_set
 
 from tests import REPO_ROOT
 

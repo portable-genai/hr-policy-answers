@@ -61,6 +61,7 @@ from hr_policy_answers.domain.entitlement_service import (
 from hr_policy_answers.domain.pii import (
     JURISDICTIONS,
 )
+from hr_policy_answers.packs import default_engine
 
 
 def loaded_cloud_sdks() -> tuple[str, ...]:
@@ -298,7 +299,9 @@ class DemoRun:
             tenant=TENANT,
         )
         self.container = build_container(self.settings)
-        self.service = EntitlementService(self.container.audit, tracer=self.container.tracer)
+        self.service = EntitlementService(
+            self.container.audit, default_engine(), tracer=self.container.tracer
+        )
         self.results: list[StepResult] = []
         self.cases = 0
         self.escalated = 0
