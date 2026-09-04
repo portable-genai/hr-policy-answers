@@ -103,7 +103,8 @@ def test_no_planted_identifier_reaches_any_sink_the_engine_citations_feed() -> N
     the SAME audit event, so whatever the engine put in a citation was persisted verbatim beside
     a summary that had just been scrubbed. The worksheet itself is returned UNCHANGED on purpose
     (the API, the CLI and the agent must all see the engine's answer), so the two sinks that must
-    hold are the WORM record and the outbound Hrz7 payload, and each is closed at its own edge:
+    hold are the WORM record and the outbound human-review-console payload, and each is closed at
+    its own edge:
     the audit write here, and ``_kit_citations`` where the payload crosses to a shared console.
 
     There is no model sink on this path: the engine is pure stdlib and this repo binds no
@@ -128,7 +129,7 @@ def test_no_planted_identifier_reaches_any_sink_the_engine_citations_feed() -> N
         result_to_review(result, maker=sample_cases.ACTOR, tenant=sample_cases.TENANT).to_payload(),
         default=str,
     )
-    assert planted not in wire, f"{planted} survived onto the wire to Hrz7: {wire}"
+    assert planted not in wire, f"{planted} survived onto the wire to human-review-console: {wire}"
 
     assert audit.log.verify_chain().ok
 

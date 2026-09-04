@@ -29,7 +29,7 @@ the config boundary", not "pure stdlib".
   eval scorer. This is the dev, test and CI default and the working proof that the domain runs
   entirely off-cloud.
 - **`gcp`** is the managed stack: Cloud Logging WORM, IAP identity, Cloud Trace or OTLP to the
-  Hrz5 collector, the Hrz7 console over S2S, and the Hrz4 promotion gate. Every cloud import is
+  `agent-observability` collector, the `human-review-console` over S2S, and the `model-quality-gate` promotion gate. Every cloud import is
   lazy and lives inside the method, so the other two profiles import with no cloud SDK installed.
   That is proved by BLOCKING the import in a fresh interpreter (`tests/contract/_sdk_free_probe.py`),
   not by the SDK happening to be absent from the machine.
@@ -51,7 +51,7 @@ Four port modules and five bound ports, and no more:
 |---|---|---|
 | `ports/audit.py` | `audit` | the WORM audit sink |
 | `ports/identity.py` | `identity` | the verified principal (the Protocol itself comes from the commons; this module adds what an adapter DECLARES about end-user authentication) |
-| `ports/review_router.py` | `review_router` | rule R8 routing to Hrz7 |
+| `ports/review_router.py` | `review_router` | rule R8 routing to `human-review-console` |
 | `ports/observability.py` | `tracer` and `evaluation` | spans, and the promotion authority |
 
 That is the whole list. There is no generation, narration, LLM or retrieval port, in any profile.
@@ -119,9 +119,9 @@ P-03 row in [`../../COMPLIANCE.md`](../../COMPLIANCE.md).
   configuration is absent.
 - **The Interconnect attachment and the no-public-egress network posture.** The VPC-SC perimeter
   ships; the private-connectivity half of P-01 does not. VPC-SC governs access to Google APIs
-  across perimeters, not arbitrary internet egress, and the outbound R8 call to the Hrz7 console
+  across perimeters, not arbitrary internet egress, and the outbound R8 call to the `human-review-console`
   is ordinary HTTPS to a non-Google host, so it is a firewall and Cloud NAT concern you still own.
 - **Tamper evidence beyond what the offline sink can prove.** Production non-rewritability is the
-  locked bucket's job, or Hrz5's.
+  locked bucket's job, or `agent-observability`'s.
 - **Anything about a model.** There is no model to be portable about. See
   [`../model-card.md`](../model-card.md).

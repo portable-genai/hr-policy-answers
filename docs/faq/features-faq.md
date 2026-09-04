@@ -82,7 +82,7 @@ band demands two approvals at the console rather than one.
 
 Setting `requires_human_review` and calling `ReviewRouterPort.route` is one act, and it happens in
 the same call that produced the result, on the API, the CLI and the agent tool alike. That is
-dependency rule R8. The escalation goes to the **Hrz7** human-review console over the shared
+dependency rule R8. The escalation goes to the `human-review-console` over the shared
 `review-kit`, redacted before the wire, with the verified principal as maker and the tenant
 partition carried. The offline family enqueues to the kit's outbox (deliberately not a no-op, so
 a producer cannot ship R8 unwired and green), the managed family submits over S2S and REFUSES
@@ -102,7 +102,7 @@ own INDEPENDENT oracle rather than against the engine's own answer:
 - `pii_safety`: no raw identifier planted in a case survives into an audit record.
 
 All three thresholds are 0.99, and `tests/unit/test_entitlement_eval.py` proves each one can go
-RED per market. `--mode gate` is the promotion verdict and delegates to Hrz4.
+RED per market. `--mode gate` is the promotion verdict and delegates to `model-quality-gate`.
 
 ### Which capabilities does this repo own vs integrate from the catalog?
 
@@ -112,13 +112,13 @@ still owes, the cross-cutting concerns below. Do not rebuild them in a fork.
 
 | Concern | Owned by | H2's role today |
 |---|---|---|
-| Human review and maker-checker | **Hrz7** `human-review-console` | routes every escalation to it (rule R8), fully wired in all three profiles |
-| Tracing | **Hrz5** `agent-observability` | one span per verdict, structural attributes only; the managed adapter exports OTLP to the Hrz5 collector when `OTEL_EXPORTER_OTLP_ENDPOINT` names one |
-| Immutable shared audit sink | **Hrz5** | NOT wired: the record lands in this repo's own store today |
-| Promotion and model-risk gate | **Hrz4** `model-quality-gate` | the client half is bound; registering this repo's bundle and thresholds with Hrz4 is still owed |
-| Agent registry, versioning, entitlements | **Hrz3** `agent-registry` | publishes an A2A card at `/.well-known/agent-card.json`, but is NOT registered |
-| Guardrail, prompt-injection defence, output filtering | **Hrz1** `agent-guardrail-gateway` | NOT wired; there is no `GuardrailPort`. It becomes mandatory the moment untrusted text reaches a model |
-| Governed RAG with citations | **Hrz2** `enterprise-knowledge-base` | NOT wired; no retrieval port exists. This is where a grounded policy-answer path belongs |
+| Human review and maker-checker | `human-review-console` | routes every escalation to it (rule R8), fully wired in all three profiles |
+| Tracing | `agent-observability` | one span per verdict, structural attributes only; the managed adapter exports OTLP to the `agent-observability` collector when `OTEL_EXPORTER_OTLP_ENDPOINT` names one |
+| Immutable shared audit sink | `agent-observability` | NOT wired: the record lands in this repo's own store today |
+| Promotion and model-risk gate | `model-quality-gate` | the client half is bound; registering this repo's bundle and thresholds with `model-quality-gate` is still owed |
+| Agent registry, versioning, entitlements | `agent-registry` | publishes an A2A card at `/.well-known/agent-card.json`, but is NOT registered |
+| Guardrail, prompt-injection defence, output filtering | `agent-guardrail-gateway` | NOT wired; there is no `GuardrailPort`. It becomes mandatory the moment untrusted text reaches a model |
+| Governed RAG with citations | `enterprise-knowledge-base` | NOT wired; no retrieval port exists. This is where a grounded policy-answer path belongs |
 
 ### Where does H2 stop within the HR journey?
 
@@ -126,7 +126,7 @@ It answers entitlement and policy questions and escalates the consequential ones
 payroll engine and it commits nothing: no leave is booked, no payment is made, no record in a
 system of record is updated. It holds no employee master data of its own, because it has no
 queryable store; the facts arrive on the request. Case management and the approval workflow
-itself belong to Hrz7. Before building anything adjacent, check the
+itself belong to `human-review-console`. Before building anything adjacent, check the
 [organization's repository index](https://github.com/portable-genai) for a system that
 already owns it.
 

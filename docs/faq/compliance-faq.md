@@ -9,7 +9,7 @@ with an adopter-owned crosswalk), [`../../SPEC.md`](../../SPEC.md),
 
 Only in the plainly non-consequential case, and never for the ones that matter. A computed answer
 that is within entitlement and not termination-linked returns `auto_approved`. Everything else
-sets `requires_human_review` AND is routed in the same call to the **Hrz7** human-review console
+sets `requires_human_review` AND is routed in the same call to the `human-review-console`
 under dependency rule R8: a contested (overdrawn) balance goes to the HR business partner and
 payroll control, a termination-linked or final-pay question goes to those two plus legal and
 carries a CRITICAL band that demands two approvals, and a question no rule matches carries no
@@ -46,7 +46,7 @@ Two different answers, and the difference is deliberate:
   universal email and phone rows last, so a broad pattern cannot subsume a narrower one. A fork
   sets this list to its own footprint.
 - **On the outbound review**, `adapters/_review_payload.py` ignores that selection and scrubs
-  against EVERY jurisdiction's national-ID rows plus the universal ones, because the Hrz7 console
+  against EVERY jurisdiction's national-ID rows plus the universal ones, because the `human-review-console`
   is a shared sink and a case filed in one market can still quote another market's identifier.
 
 Note this list is independent of the three jurisdictions the rule packs cover (SG, AU, JP). The
@@ -104,7 +104,7 @@ employment-law review is an explicit adoption step and why second-line review of
 policy in `domain/` is listed as adopter-owned in `COMPLIANCE.md`.
 
 The quality evidence is the offline gate: three metrics against an independent oracle, each
-proven able to go red, running on every change. Promotion itself is **Hrz4**'s decision, not this
+proven able to go red, running on every change. Promotion itself is `model-quality-gate`'s decision, not this
 repo's, and the local evaluation adapter REFUSES to promote rather than certifying itself.
 
 ### Is data residency enforced, or only documented?
@@ -131,19 +131,19 @@ See the P-03 row in [`../../COMPLIANCE.md`](../../COMPLIANCE.md).
 `practices-audit.md` records the per-check verdict. The substantive open items:
 
 - **P-05 grounding and R3**: no retrieval port and no governed corpus, so there is nothing to
-  ground yet. This is Hrz2's boundary.
-- **R1**: redaction is in place, but no `GuardrailPort` is bound to the Hrz1 gateway for
+  ground yet. This is `enterprise-knowledge-base`'s boundary.
+- **R1**: redaction is in place, but no `GuardrailPort` is bound to the `agent-guardrail-gateway` for
   injection defence and output filtering. It becomes mandatory the moment untrusted text reaches
   a model.
-- **R2**: tracing reaches the Hrz5 collector when configured, but the immutable audit record
+- **R2**: tracing reaches the `agent-observability` collector when configured, but the immutable audit record
   still lands in this repo's own store rather than the shared sink.
-- **R4**: the A2A card is published but not registered with Hrz3.
+- **R4**: the A2A card is published but not registered with `agent-registry`.
 - **R5 and P-08**: the gate client exists; this repo's metric bundle and thresholds are not yet
-  registered with Hrz4, so gate mode has no authority to ask.
+  registered with `model-quality-gate`, so gate mode has no authority to ask.
 - **P-10 resilience**: only the review path degrades correctly today (the outbox retains an
   escalation the console could not take). Timeouts, circuit breakers, a documented kill switch
   per outbound dependency and the CPS 230 recovery objectives are still owed.
-- **R6**: the Rsk3 intake validation reference is not recorded here yet.
+- **R6**: the `architecture-validator` intake validation reference is not recorded here yet.
 - **Tenant isolation**: the tenant partition is carried on every outbound review, but there is no
   queryable store yet, so object-level authorisation derived from data tags is recorded as
   not-yet-applicable rather than implemented.

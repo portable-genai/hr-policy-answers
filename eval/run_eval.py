@@ -14,8 +14,8 @@ Two named layers via ``--mode`` (the scaffold is ``agent_eval_kit.eval_main``):
   * ``pii_safety`` - no raw identifier planted in a case survives into ANY content-bearing field
     of an audit record, the citations included (see :func:`audit_surfaces`).
 
-* **gate** - the promotion verdict from the shared Hrz4 authority (requires the ``gcp`` profile),
-  via ``agent_eval_kit.PromotionGateClient``.
+* **gate** - the promotion verdict from the shared model-quality-gate authority (requires the
+  ``gcp`` profile), via ``agent_eval_kit.PromotionGateClient``.
 
 Each metric is proven able to go RED, and against the SHIPPED scorer rather than a lookalike
 written for the test: ``tests/unit/test_entitlement_eval.py`` drives the first two per market
@@ -75,7 +75,8 @@ THRESHOLDS: dict[str, float] = {
     "review_safety": 0.99,
     "pii_safety": 0.99,
 }
-#: The registered Hrz4 metric bundle for this vertical (Hrz4 owns the metrics + thresholds).
+#: The registered model-quality-gate metric bundle for this vertical (model-quality-gate owns the
+#: metrics + thresholds).
 _BUNDLE = "hr-policy-answers"
 
 
@@ -227,6 +228,6 @@ if __name__ == "__main__":
             smoke=run_smoke,
             gate=run_gate,
             default_dataset=DEFAULT_DATASET,
-            description="Offline / Hrz4 evaluation gate for H2.",
+            description="Offline / model-quality-gate for H2.",
         )
     )
