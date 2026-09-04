@@ -68,7 +68,8 @@ def test_no_planted_identifier_reaches_any_sink_the_raw_case_text_feeds() -> Non
     ``redacted_summary`` was masked and the citation stored beside it in the SAME WORM record
     kept the identifier verbatim, in the ``snippet`` cut from the case text and in the
     ``source_id`` composed as ``case:<subject>``. The record a regulator reads back therefore
-    held exactly what the redaction was there to remove, and the Hrz7 payload the router derives
+    held exactly what the redaction was there to remove, and the human-review-console payload the
+    router derives
     from the same citation carried it to a shared console.
 
     Asserting per sink is how the next sink gets forgotten, so this walks all of them: the WORM
@@ -99,13 +100,14 @@ def test_no_planted_identifier_reaches_any_sink_the_raw_case_text_feeds() -> Non
     for token in planted:
         assert token not in returned, f"{token} survived into the returned citations: {returned}"
 
-    # The outbound Hrz7 payload: a SHARED console, so the locator fields count as content too.
+    # The outbound human-review-console payload: a SHARED console, so the locator fields count as
+    # content too.
     wire = json.dumps(
         result_to_review(result, maker=sample_cases.ACTOR, tenant=sample_cases.TENANT).to_payload(),
         default=str,
     )
     for token in planted:
-        assert token not in wire, f"{token} survived onto the wire to Hrz7: {wire}"
+        assert token not in wire, f"{token} survived onto the wire to human-review-console: {wire}"
 
     assert audit.log.verify_chain().ok
 

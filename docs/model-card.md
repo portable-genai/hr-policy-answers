@@ -23,7 +23,7 @@ clause produced it, not because a model claimed a source.
 
 One model id does appear in the repo, and it is not a model this service calls: `_GATED_MODEL =
 "gemini-3.5-flash"` in `adapters/gcp/evaluation.py`, mirrored in `eval/run_eval.py`, is the label
-the Hrz4 promotion client records a verdict AGAINST so a future model swap invalidates the old
+the `model-quality-gate` promotion client records a verdict AGAINST so a future model swap invalidates the old
 verdict rather than inheriting it. No code path in this repo sends it a prompt.
 
 ## What produces each consequential output
@@ -48,7 +48,7 @@ If a generation port is ever added, these are the terms, and none of them is neg
   result structure before it can enter a model's context.
 - Every answer stays **cited to a policy clause** from the packs. An uncited restatement is not
   shippable, and empty retrieval must be a hard error rather than an ungrounded answer.
-- The escalation still routes to **Hrz7 under rule R8**, in the same call that produced the
+- The escalation still routes to **`human-review-console` under rule R8**, in the same call that produced the
   result. A model in the path changes nothing about who decides.
 
 ## Controls that must exist BEFORE a model is introduced
@@ -64,9 +64,9 @@ If a generation port is ever added, these are the terms, and none of them is neg
    engine already works with no model, so the kill switch is a real fallback rather than an outage.
 4. **An eval that scores the LIVE model's groundedness against the packs.** Today's three metrics
    (`entitlement_accuracy`, `review_safety`, `pii_safety`, all at 0.99) score the deterministic
-   engine. A model needs its own metric, proven able to go red, and it belongs in the Hrz4
+   engine. A model needs its own metric, proven able to go red, and it belongs in the `model-quality-gate`
    promotion bundle rather than only in the offline smoke run.
-5. **Prompt-injection screening through the Hrz1 guardrail** on any untrusted text before
+5. **Prompt-injection screening through the `agent-guardrail-gateway`** on any untrusted text before
    generation, and output filtering after, failing closed to deterministic-only when the screen is
    unavailable. There is no `GuardrailPort` today; `COMPLIANCE.md` R1 records that as owed.
 6. **An explicit position on employee data reaching a managed model.** This is HR data with a real

@@ -71,7 +71,8 @@ class EntitlementService:
         # than in an assumption about which engine is bound.
         #
         # The worksheet itself is still returned unchanged: the API, the CLI and the agent must
-        # see the engine's own answer. The other sink it feeds, the Hrz7 payload, is masked where
+        # see the engine's own answer. The other sink it feeds, the human-review-console payload, is
+        # masked where
         # it crosses to the shared console (``adapters/_review_payload``).
         detail = (
             f"{result.summary} :: employee={request.facts.employee_ref} "

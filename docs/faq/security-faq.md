@@ -28,7 +28,7 @@ Three points, all before something leaves the process, all using the shared `pii
 2. **Before the review payload goes on the wire.** `adapters/_review_payload.py` redacts the
    subject, the summary and every citation snippet, and it does so against **every**
    jurisdiction's rows plus the universal ones, not just the ones this deployment selected,
-   because the Hrz7 console is a shared sink and a case filed in one market can still quote
+   because the `human-review-console` is a shared sink and a case filed in one market can still quote
    another market's national id. The redacted subject is reused for `case_ref` and `source_key`
    too, so a raw identifier cannot reach the console on a structured field either.
 3. **Before a tool result reaches a model's context.** `agent/tools.py::_redacted` walks the
@@ -100,7 +100,7 @@ off is no guard.
 
 ## What about outbound service-to-service calls?
 
-The one live outbound path is the rule R8 escalation to the Hrz7 console, over the shared
+The one live outbound path is the rule R8 escalation to the `human-review-console`, over the shared
 `review-kit` client, which refuses a plaintext non-loopback URL and a missing bearer at
 construction. Its credentials (`HUMAN_REVIEW_S2S_TOKEN`, `HUMAN_REVIEW_S2S_SIGNING_KEY`) are deliberately
 distinct variables from this service's own inbound `POLICYHR_S2S_TOKEN`, so an inbound secret can
@@ -147,10 +147,10 @@ because a two-state `env.UI_TENANT_ORIGINS || "*"` read once survived the entire
 
 ## What is explicitly out of scope for this repo?
 
-Prompt-injection screening and output filtering (**Hrz1**), the governed knowledge base
-(**Hrz2**), the agent registry (**Hrz3**), the promotion and model-risk gate (**Hrz4**), the
-shared observability and immutable audit sink (**Hrz5**), and the human-review console
-(**Hrz7**). Of those, only Hrz7 is fully wired today. The rest are dependencies to integrate, not
+Prompt-injection screening and output filtering (`agent-guardrail-gateway`), the governed knowledge base
+(`enterprise-knowledge-base`), the agent registry (`agent-registry`), the promotion and model-risk gate (`model-quality-gate`), the
+shared observability and immutable audit sink (`agent-observability`), and the human-review console
+(`human-review-console`). Of those, only `human-review-console` is fully wired today. The rest are dependencies to integrate, not
 features to rebuild. See [features-faq.md](features-faq.md) for the boundary map and
 [`../../COMPLIANCE.md`](../../COMPLIANCE.md) for what each row still owes.
 

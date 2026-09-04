@@ -291,7 +291,8 @@ def triage(
 ) -> TriageResponse:
     """Triage a case; the audit actor is the verified principal, never the request body.
 
-    Rule R8: a result that sets ``requires_human_review`` is ROUTED to the Hrz7 console here,
+    Rule R8: a result that sets ``requires_human_review`` is ROUTED to the human-review-console
+    here,
     in the same request that produced it. Setting the flag is not the escalation; routing is.
     The maker is the verified principal, so the console records who originated the decision.
     """
@@ -319,7 +320,7 @@ def entitlement(
     Every number in the response comes from the pure engine, never a model. The audit actor is the
     verified principal, never the client-asserted ``employee_ref``. A termination-linked question, a
     contested (overdrawn) balance or a fact the packs cannot answer sets ``requires_human_review``
-    and is ROUTED to the Hrz7 console here, in the same request that produced it.
+    and is ROUTED to the human-review-console here, in the same request that produced it.
     """
     container = _container()
     service = EntitlementService(container.audit, default_engine(), tracer=container.tracer)

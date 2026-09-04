@@ -58,7 +58,8 @@ class TriageService:
         # how the WORM record ended up keeping exactly what the redaction removed: the summary
         # was scrubbed and the citation stored beside it in the same row carried the identifier
         # verbatim, in the snippet cut from the case text and in the source_id composed out of
-        # the subject. The Hrz7 review the router derives from this result carried it too.
+        # the subject. The human-review-console review the router derives from this result carried
+        # it too.
         # Doing it at the three sinks instead would mean getting it right three times.
         #
         # Mask and THEN cut to 80: cutting first can slice an identifier across the boundary so

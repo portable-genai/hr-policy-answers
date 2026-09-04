@@ -46,7 +46,8 @@ PLANTED_EMAIL = "ops@gamma.example"
 #: named employee and that is how a real one arrives. While the fixture planted it only in the
 #: free text, every LOCATOR built out of the subject stayed unproven: the citation
 #: ``source_id`` the triage service composes as ``case:<subject>``, and the ``case_ref`` and
-#: ``source_key`` the Hrz7 payload derives from it. The snippet was masked and the locator
+#: ``source_key`` the human-review-console payload derives from it. The snippet was masked and the
+#: locator
 #: beside it carried the identifier verbatim.
 PII_CASE = TriageInput(
     subject=f"Grievance for employee {PLANTED_NRIC} (FICTIONAL)",
