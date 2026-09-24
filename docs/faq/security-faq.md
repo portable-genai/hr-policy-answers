@@ -104,8 +104,9 @@ The one live outbound path is the rule R8 escalation to the `human-review-consol
 `review-kit` client, which refuses a plaintext non-loopback URL and a missing bearer at
 construction. Its credentials (`HUMAN_REVIEW_S2S_TOKEN`, `HUMAN_REVIEW_S2S_SIGNING_KEY`) are deliberately
 distinct variables from this service's own inbound `POLICYHR_S2S_TOKEN`, so an inbound secret can
-never be spent outbound. The managed router REFUSES when no console is configured rather than
-swallowing the escalation.
+never be spent outbound. With routing on, the managed profile REFUSES TO BOOT when no console is
+configured, and a hand-off that fails at request time is reported as `review_routing: "failed"`
+rather than read as reviewed.
 
 ## Are there secrets in the repo?
 

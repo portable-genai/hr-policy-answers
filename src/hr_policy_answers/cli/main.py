@@ -12,6 +12,7 @@ import sys
 
 from hex_service_kit.logging import configure_logging
 
+from ..adapters.controls import RecordingReviewRouter
 from ..config import build_container
 from ..domain.entitlement_service import EntitlementService
 from ..domain.models import EmployeeFacts, EntitlementRequest, TriageInput
@@ -56,11 +57,11 @@ def main(argv: list[str] | None = None) -> int:
         result = service.triage(TriageInput(subject=args.subject, text=args.text), actor=args.actor)
         print(f"{result.subject}: {result.severity.value} ({result.decision.value})")
         print(f"  requires_human_review: {result.requires_human_review}")
-        if result.requires_human_review:
-            # Rule R8 on the CLI path too: the same escalation, the same router. A surface that
-            # only printed the flag would be a second place for an escalation to stop.
-            ref = container.review_router.route(result, maker=args.actor, tenant=args.tenant)
-            print(f"  routed to human review: {ref}")
+        # Rule R8 on the CLI path too: the same escalation, the same router. A surface that only
+        # printed the flag would be a second place for an escalation to stop.
+        routing = RecordingReviewRouter(container.review_router)
+        ref = routing.route(result, maker=args.actor, tenant=args.tenant)
+        print(f"  human review hand-off : {routing.outcome.value} {ref}".rstrip())
         return 0
 
     if args.command == "assess":
@@ -84,11 +85,9 @@ def main(argv: list[str] | None = None) -> int:
         print(f"  balance: {ent.balance_days}")
         print(f"  approval path: {' -> '.join(ent.approval_path)}")
         print(f"  requires_human_review: {ent.requires_human_review}")
-        if ent.requires_human_review:
-            ref = container.review_router.route(
-                ent, maker=args.actor, tenant=args.tenant, action=_ENTITLEMENT_ACTION
-            )
-            print(f"  routed to human review: {ref}")
+        routing = RecordingReviewRouter(container.review_router)
+        ref = routing.route(ent, maker=args.actor, tenant=args.tenant, action=_ENTITLEMENT_ACTION)
+        print(f"  human review hand-off : {routing.outcome.value} {ref}".rstrip())
         return 0
 
     return 2  # pragma: no cover - argparse requires a subcommand

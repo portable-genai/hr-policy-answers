@@ -33,7 +33,8 @@ class ReviewRouterPort(Protocol):
         client-asserted actor. ``action`` labels the review at the console so an entitlement
         escalation and a screening escalation are told apart; it defaults to this service's
         screening label. The return value is the console's review id where the console answered,
-        or a local queue reference where the submission was buffered; it is never empty, so a
-        caller can record what happened to the escalation.
+        or a local queue reference where the submission was buffered. It is empty only from the
+        disabled adapter a deployment binds by switching routing off, and the caller reports
+        that as ``review_routing: "off"`` rather than as a reference.
         """
         ...
