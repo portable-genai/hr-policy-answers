@@ -24,8 +24,10 @@ Locked decisions, pinned stack, contracts. This document is the deepest authorit
 - **Maker-checker (P-06) and routing (R8)**: a HIGH/CRITICAL result sets
   `requires_human_review=True` AND is routed through `ReviewRouterPort` to the `human-review-console` in the
   same request. The flag alone is not the escalation. The response carries `review_ref`, so a
-  caller can tell a routed escalation from one that stopped here. The managed adapter refuses to
-  run with no console configured rather than swallowing the escalation.
+  caller can tell a routed escalation from one that stopped here. The response also
+  carries `review_routing` (`routed`, `failed`, `off`, `not_required`). Under the managed
+  profile, routing on with no console configured refuses at boot;
+  `POLICYHR_REVIEW_ROUTING=off` is the stated way to run without it.
 - **Profile**: resolved ONCE, at import, into a `ProfileChoice` and never a bare string. Three
   states of `POLICYHR_PROFILE`: UNSET is NO CHOICE (the SDK-free adapters
   still bind, but the seeded personas are refused, no service-to-service scheme is selected, every

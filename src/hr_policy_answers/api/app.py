@@ -67,6 +67,7 @@ from hex_service_kit.web import (
     make_require_service_caller,
 )
 
+from ..adapters.controls import RecordingReviewRouter
 from ..config import (
     LOCAL_PROFILE,
     Container,
@@ -302,12 +303,13 @@ def triage(
         TriageInput(subject=request.subject, text=request.text),
         actor=principal.actor,
     )
-    review_ref = ""
-    if result.requires_human_review:
-        review_ref = container.review_router.route(
-            result, maker=principal.actor, tenant=principal.tenant
-        )
-    return TriageResponse.from_domain(result, review_ref=review_ref)
+    # The hand-off never fails an already-computed, already-audited result; the response says
+    # what happened to it instead (the fleet's runtime-control contract).
+    routing = RecordingReviewRouter(container.review_router)
+    review_ref = routing.route(result, maker=principal.actor, tenant=principal.tenant)
+    return TriageResponse.from_domain(
+        result, review_ref=review_ref, review_routing=routing.outcome.value
+    )
 
 
 @app.post("/v1/entitlement", response_model=EntitlementResponse, tags=["artifacts"])
@@ -339,12 +341,15 @@ def entitlement(
         ),
         actor=principal.actor,
     )
-    review_ref = ""
-    if result.requires_human_review:
-        review_ref = container.review_router.route(
-            result, maker=principal.actor, tenant=principal.tenant, action=_ENTITLEMENT_ACTION
-        )
-    return EntitlementResponse.from_domain(result, review_ref=review_ref)
+    # The hand-off never fails an already-computed, already-audited result; the response says
+    # what happened to it instead (the fleet's runtime-control contract).
+    routing = RecordingReviewRouter(container.review_router)
+    review_ref = routing.route(
+        result, maker=principal.actor, tenant=principal.tenant, action=_ENTITLEMENT_ACTION
+    )
+    return EntitlementResponse.from_domain(
+        result, review_ref=review_ref, review_routing=routing.outcome.value
+    )
 
 
 @app.post("/v1/audit/ping", dependencies=[Depends(require_service_caller)], tags=["ops"])
