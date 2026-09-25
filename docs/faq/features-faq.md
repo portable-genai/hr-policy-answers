@@ -85,8 +85,10 @@ the same call that produced the result, on the API, the CLI and the agent tool a
 dependency rule R8. The escalation goes to the `human-review-console` over the shared
 `review-kit`, redacted before the wire, with the verified principal as maker and the tenant
 partition carried. The offline family enqueues to the kit's outbox (deliberately not a no-op, so
-a producer cannot ship R8 unwired and green), the managed family submits over S2S and REFUSES
-when no console is configured, and the on-premises family raises.
+a producer cannot ship R8 unwired and green), the managed family submits over S2S, and the
+on-premises family raises. Under the managed profile the service REFUSES TO BOOT with routing on
+and no console configured, a hand-off that fails at request time is reported as `review_routing: "failed"` and
+logged, and `POLICYHR_REVIEW_ROUTING=off` switches routing off.
 `tests/unit/test_review_routing.py` asserts the routing rather than the flag.
 
 ### How is quality measured?
